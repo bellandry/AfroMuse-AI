@@ -1,7 +1,7 @@
 import { desc, eq } from "drizzle-orm";
 import { z } from "zod";
 import { creditLedgerEntries, musicGenerations } from "../../drizzle/schema";
-import { db, listGenerationsForUser } from "../db";
+import { db, listGenerationsForUser, listLibraryForUser } from "../db";
 import { getCreditBalance } from "../services/credits";
 import { protectedProcedure, router } from "../_core/trpc";
 
@@ -14,7 +14,7 @@ export const dashboardRouter = router({
     ]);
     return { wallet, generations: generations.slice(0, 6), ledger };
   }),
-  library: protectedProcedure.query(({ ctx }) => listGenerationsForUser(ctx.user.id)),
+  library: protectedProcedure.query(({ ctx }) => listLibraryForUser(ctx.user.id)),
   generationById: protectedProcedure.input(z.object({ id: z.string().uuid() })).query(async ({ ctx, input }) => {
     const [generation] = await db.select().from(musicGenerations).where(eq(musicGenerations.id, input.id)).limit(1);
     if (!generation || generation.userId !== ctx.user.id) return null;

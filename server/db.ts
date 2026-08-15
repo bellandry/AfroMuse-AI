@@ -20,6 +20,15 @@ export async function listGenerationsForUser(userId: string) {
     .orderBy(desc(schema.musicGenerations.createdAt));
 }
 
+export async function listLibraryForUser(userId: string) {
+  const rows = await db.select({ generation: schema.musicGenerations, audio: schema.audioAssets })
+    .from(schema.musicGenerations)
+    .leftJoin(schema.audioAssets, eq(schema.audioAssets.generationId, schema.musicGenerations.id))
+    .where(eq(schema.musicGenerations.userId, userId))
+    .orderBy(desc(schema.musicGenerations.createdAt));
+  return rows.map(({ generation, audio }) => ({ ...generation, audioUrl: audio?.publicUrl ?? null }));
+}
+
 export async function getGenerationForUser(userId: string, generationId: string) {
   const [generation] = await db.select().from(schema.musicGenerations)
     .where(and(eq(schema.musicGenerations.id, generationId), eq(schema.musicGenerations.userId, userId)))

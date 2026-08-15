@@ -11,6 +11,8 @@ import Legal from "./pages/Legal";
 import Studio from "./pages/Studio";
 import Library from "./pages/Library";
 import Credits from "./pages/Credits";
+import Contact from "./pages/Contact";
+import Account from "./pages/Account";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -22,6 +24,8 @@ function Router() {
       <Route path={"/creer"} component={Studio} />
       <Route path={"/bibliotheque"} component={Library} />
       <Route path={"/credits"} component={Credits} />
+      <Route path={"/contact"} component={Contact} />
+      <Route path={"/compte"} component={Account} />
       <Route path={"/cgu"}>{() => <Legal type="cgu" />}</Route>
       <Route path={"/confidentialite"}>{() => <Legal type="confidentialite" />}</Route>
       <Route path={"/404"} component={NotFound} />
