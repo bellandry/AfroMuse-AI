@@ -24,6 +24,19 @@
 - [x] Implémenter un vrai flux de remboursement de crédits (fonction dédiée + écriture ledger `refund` + déclenchement depuis les cas métier pertinents).
 - [x] Brancher l’envoi automatique de l’audio généré vers WhatsApp quand une génération liée à un numéro WhatsApp aboutit, avec gestion des erreurs d’envoi/réessai.
 - [x] Vérifier visuellement en desktop et mobile les écrans applicatifs `/app`, `/creer`, `/bibliotheque` et `/credits`, puis corriger les éventuels problèmes responsive avant de marquer la livraison prête.
-- [ ] Configurer l’identité Git locale avec le nom et l’email fournis pour AfroMuse AI.
-- [ ] Créer des commits structurés de l’état actuel du projet avant publication.
+- [x] Configurer l’identité Git locale avec le nom et l’email fournis pour AfroMuse AI.
+- [x] Créer des commits structurés de l’état actuel du projet avant publication.
 - [ ] Configurer le dépôt distant GitHub `bellandry/AfroMuse-AI` et y pousser les commits.
+- [x] Cartographier les routes publiques, privées et programmatiques afin d’appliquer des règles d’indexation explicites.
+- [x] Convertir les routes publiques en rendu serveur avec hydratation, métadonnées uniques, canoniques, Open Graph et réponses HTTP adaptées.
+- [x] Ajouter les variables de configuration de domaine canonique et de nom de site, puis documenter leur configuration de déploiement.
+- [x] Ajouter une infrastructure de crawl : `robots.txt`, sitemap XML dynamique, page `llms.txt` expérimentale et règles distinctes pour les robots de recherche et assistants.
+- [x] Mettre en place des données structurées JSON-LD fidèles au contenu pour l’organisation, le logiciel, les fils d’Ariane, guides, FAQ et contact.
+- [x] Construire les hubs et fiches SEO éditoriales de styles, ambiances, guides et cas d’usage à partir d’une taxonomie de contenu contrôlée.
+- [x] Renforcer les pages de mentions légales, cookies et politique de contenu IA, sans inventer les informations de l’entité légale.
+- [x] Enrichir les CGU, la confidentialité et le contact avec des contenus de confiance et des liens publics cohérents.
+- [x] Ajouter des tests automatisés de métadonnées, sitemap, robots, directives `noindex` et pages programmatiques, puis vérifier le rendu desktop et mobile.
+- [x] Documenter la stratégie SEO, les limites de découvrabilité IA, les sources et les prérequis de soumission Search Console et Bing Webmaster Tools.
+- [x] Vérifier et compléter le guide d’exploitation des variables `CANONICAL_ORIGIN` et `SITE_NAME` pour le déploiement.
+- [x] Enrichir explicitement le contact avec délais de réponse, usage des données du formulaire et informations de support cohérentes avec les pages de confiance.
+- [x] Ajouter des tests automatisés des routes `robots.txt` et `sitemap.xml`, du HTML SSR public et de la directive `noindex` privée.
