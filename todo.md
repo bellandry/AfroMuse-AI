@@ -24,3 +24,6 @@
 - [x] Implémenter un vrai flux de remboursement de crédits (fonction dédiée + écriture ledger `refund` + déclenchement depuis les cas métier pertinents).
 - [x] Brancher l’envoi automatique de l’audio généré vers WhatsApp quand une génération liée à un numéro WhatsApp aboutit, avec gestion des erreurs d’envoi/réessai.
 - [x] Vérifier visuellement en desktop et mobile les écrans applicatifs `/app`, `/creer`, `/bibliotheque` et `/credits`, puis corriger les éventuels problèmes responsive avant de marquer la livraison prête.
+- [ ] Configurer l’identité Git locale avec le nom et l’email fournis pour AfroMuse AI.
+- [ ] Créer des commits structurés de l’état actuel du projet avant publication.
+- [ ] Configurer le dépôt distant GitHub `bellandry/AfroMuse-AI` et y pousser les commits.
