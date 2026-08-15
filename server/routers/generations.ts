@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { createGeneration, processGeneration } from "../services/generations";
+import { getGenerationForUser } from "../db";
 import { protectedProcedure, router } from "../_core/trpc";
 
 const createInput = z.object({
@@ -19,8 +20,9 @@ export const generationsRouter = router({
   processForDevelopment: protectedProcedure.input(z.object({ id: z.string().uuid() })).mutation(async ({ ctx, input }) => {
     // In production, this call is made by a deployed job handler or provider callback,
     // never by a browser request. It remains available for local integration testing.
+    const generation = await getGenerationForUser(ctx.user.id, input.id);
+    if (!generation) throw new Error("Accès non autorisé.");
     const result = await processGeneration(input.id);
-    if (result && "userId" in result && result.userId !== ctx.user.id) throw new Error("Accès non autorisé.");
     return result;
   }),
 });

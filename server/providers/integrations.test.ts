@@ -2,6 +2,7 @@ import crypto from "node:crypto";
 import { afterEach, describe, expect, it } from "vitest";
 import { OpenWAProvider } from "./openwa";
 import { createPaymentProvider } from "./payments";
+import { ElevenMusicProvider } from "./eleven-music";
 
 const originalEnv = { ...process.env };
 
@@ -31,5 +32,20 @@ describe("signatures de prestataires", () => {
     const provider = new OpenWAProvider();
     expect(provider.verifyWebhook({ rawBody: "{}", signature: "openwa-test-secret" })).toBe(true);
     expect(provider.verifyWebhook({ rawBody: "{}", signature: "wrong-secret" })).toBe(false);
+  });
+});
+
+describe("règles de génération musicale", () => {
+  const provider = new ElevenMusicProvider();
+  const baseInput = { requestId: "test", title: "Test", prompt: "Une composition lumineuse et organique", style: "afrobeats", mood: "solaire", durationSeconds: 60, mode: "instrumental" as const, language: "fr" as const };
+  it("estime les crédits selon la durée et le format", () => {
+    expect(provider.estimateCredits(baseInput)).toBe(6);
+    expect(provider.estimateCredits({ ...baseInput, mode: "vocal" })).toBe(8);
+    expect(provider.estimateCredits({ ...baseInput, durationSeconds: 120 })).toBe(12);
+  });
+
+  it("reste en état de traitement sans clé ElevenLabs en développement", async () => {
+    delete process.env.ELEVENLABS_API_KEY;
+    await expect(provider.createGeneration(baseInput)).resolves.toMatchObject({ status: "processing", providerJobId: "development-test" });
   });
 });
