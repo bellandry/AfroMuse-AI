@@ -1,33 +1,53 @@
-import { useAuth } from "@/_core/hooks/useAuth";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
-import { Streamdown } from 'streamdown';
+import { ArrowRight, AudioLines, Check, CirclePlay, Headphones, MessageCircle, Music2, Send, Sparkles, WalletCards } from "lucide-react";
+import { Link } from "wouter";
 
-/**
- * All content in this page are only for example, replace with your own feature implementation
- * When building pages, remember your instructions in Frontend Workflow, Frontend Best Practices, Design Guide and Common Pitfalls
- */
+const demoAudio = "/manus-storage/afromuse-demo-afro-fusion_84f0a08b.mp3";
+const heroVisual = "/manus-storage/afromuse-hero-waves_5d5a8e8a.png";
+
 export default function Home() {
-  // The useAuth hook provides authentication state.
-  // To implement login/logout, call logout(), or start login from an event
-  // handler: onClick={() => startLogin()} (imported from "@/const"). Never call
-  // startLogin() during render (no href={startLogin()}) — it mints a one-time
-  // nonce cookie and must run only at the moment of navigation.
-  let { user, loading, error, isAuthenticated, logout } = useAuth();
-
-  // If theme is switchable in App.tsx, we can implement theme toggling like this:
-  // const { theme, toggleTheme } = useTheme();
-
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen overflow-x-hidden bg-[#09090b] text-zinc-100 selection:bg-amber-300 selection:text-zinc-950">
+      <header className="container relative z-20 flex h-20 items-center justify-between">
+        <Link href="/" className="flex items-center gap-2.5 font-semibold tracking-tight"><span className="grid h-8 w-8 place-items-center rounded-xl bg-gradient-to-br from-amber-300 to-orange-600 text-zinc-950"><AudioLines className="h-4 w-4" /></span>AfroMuse<span className="text-amber-300">AI</span></Link>
+        <nav className="hidden items-center gap-7 text-sm text-zinc-400 md:flex"><a href="#experience" className="hover:text-white">Expérience</a><a href="#whatsapp" className="hover:text-white">WhatsApp</a><a href="#tarifs" className="hover:text-white">Crédits</a></nav>
+        <Link href="/connexion"><Button className="rounded-full bg-zinc-100 px-5 text-zinc-950 hover:bg-amber-200">Commencer</Button></Link>
+      </header>
+
       <main>
-        {/* Example: lucide-react for icons */}
-        <Loader2 className="animate-spin" />
-        Example Page
-        {/* Example: Streamdown for markdown rendering */}
-        <Streamdown>Any **markdown** content</Streamdown>
-        <Button variant="default">Example Button</Button>
+        <section className="relative isolate border-b border-white/10">
+          <div className="absolute inset-0 -z-20 bg-[radial-gradient(ellipse_at_top_right,_rgba(217,119,6,0.16),transparent_42%),radial-gradient(ellipse_at_bottom_left,_rgba(109,40,217,0.18),transparent_42%)]" />
+          <img src={heroVisual} alt="Ondes musicales abstraites" className="absolute inset-0 -z-10 h-full w-full object-cover object-center opacity-50 mix-blend-screen" />
+          <div className="container grid min-h-[620px] items-end gap-10 py-20 md:grid-cols-[1.1fr_0.9fr] md:py-28">
+            <div className="max-w-3xl">
+              <Badge className="mb-7 border-amber-300/20 bg-amber-300/10 px-3 py-1 text-amber-200 hover:bg-amber-300/10"><Sparkles className="mr-1.5 h-3.5 w-3.5" /> La musique IA, pensée pour l’Afrique</Badge>
+              <h1 className="text-balance font-serif text-5xl leading-[0.95] tracking-[-0.05em] text-white sm:text-6xl md:text-7xl">Composez le son qui vous <span className="text-amber-300">ressemble.</span></h1>
+              <p className="mt-7 max-w-xl text-lg leading-relaxed text-zinc-300">Des idées aux morceaux finis, créez des univers Afrobeats, Amapiano, Highlife et bien plus — depuis le web ou une simple conversation WhatsApp.</p>
+              <div className="mt-9 flex flex-col gap-3 sm:flex-row"><Link href="/connexion"><Button size="lg" className="w-full rounded-full bg-amber-300 px-7 text-zinc-950 hover:bg-amber-200 sm:w-auto">Créer gratuitement <ArrowRight className="ml-2 h-4 w-4" /></Button></Link><a href="#experience"><Button size="lg" variant="outline" className="w-full rounded-full border-white/20 bg-black/10 text-white hover:bg-white/10 hover:text-white sm:w-auto"><CirclePlay className="mr-2 h-4 w-4" /> Écouter une démo</Button></a></div>
+              <p className="mt-5 text-xs text-zinc-500">18 crédits offerts à l’ouverture du compte. Aucun moyen de paiement requis.</p>
+            </div>
+            <div className="relative mx-auto w-full max-w-sm self-center md:self-end">
+              <div className="absolute -inset-8 -z-10 rounded-full bg-amber-400/15 blur-3xl" />
+              <div className="rounded-[2rem] border border-white/15 bg-zinc-950/75 p-4 shadow-2xl backdrop-blur-xl">
+                <div className="mb-4 flex items-center justify-between px-2"><span className="text-xs font-medium text-zinc-400">MA CRÉATION</span><span className="rounded-full bg-emerald-400/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-emerald-300">Prête</span></div>
+                <div className="rounded-2xl bg-gradient-to-br from-[#3a1b0b] via-[#1e1425] to-[#0d1821] p-5"><div className="flex h-28 items-center gap-1 overflow-hidden">{Array.from({ length: 48 }, (_, i) => <span key={i} className="w-1 rounded-full bg-gradient-to-t from-amber-500 via-amber-200 to-violet-300" style={{ height: `${22 + ((i * 37) % 72)}%`, opacity: 0.45 + ((i % 5) * 0.1) }} />)}</div><p className="mt-4 font-medium">Soleil sur Abidjan</p><p className="mt-1 text-sm text-zinc-400">Afro-fusion · Instrumental · 60 sec</p></div>
+                <div className="mt-4 flex items-center justify-between px-2"><span className="text-sm text-zinc-400">Écouter et télécharger</span><span className="grid h-10 w-10 place-items-center rounded-full bg-amber-300 text-zinc-950"><CirclePlay className="h-5 w-5" /></span></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="experience" className="container py-20 md:py-28"><div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr]"><div><p className="text-sm font-semibold uppercase tracking-[0.18em] text-amber-300">Écoutez le potentiel</p><h2 className="mt-4 max-w-md font-serif text-4xl tracking-[-0.035em] text-white md:text-5xl">La culture au cœur de chaque prompt.</h2><p className="mt-5 max-w-md leading-relaxed text-zinc-400">Choisissez une couleur musicale, une énergie et une voix. AfroMuse traduit votre intention en arrangement original, prêt à être partagé.</p></div><div className="rounded-3xl border border-white/10 bg-zinc-900/60 p-5 shadow-[0_25px_80px_rgba(0,0,0,0.35)] sm:p-7"><div className="flex items-center justify-between"><div><p className="font-medium text-white">Soleil sur Abidjan</p><p className="mt-1 text-sm text-zinc-400">Démo originale · Afro-fusion · 60 sec</p></div><Headphones className="h-5 w-5 text-amber-300" /></div><audio className="mt-7 w-full accent-amber-300" controls preload="metadata" src={demoAudio}>Votre navigateur ne prend pas en charge la lecture audio.</audio><div className="mt-7 flex flex-wrap gap-2">{["Afro-fusion", "Instrumental", "104 BPM", "Original"].map(tag => <span key={tag} className="rounded-full border border-white/10 px-3 py-1 text-xs text-zinc-300">{tag}</span>)}</div></div></div></section>
+
+        <section id="whatsapp" className="border-y border-white/10 bg-[#101014]"><div className="container grid gap-12 py-20 md:grid-cols-2 md:items-center md:py-28"><div className="order-2 rounded-[2rem] border border-white/10 bg-zinc-950 p-4 shadow-2xl md:order-1 md:max-w-md"><div className="rounded-[1.5rem] bg-[#0f2c25] p-4"><div className="flex items-center gap-3 border-b border-white/10 pb-4"><span className="grid h-9 w-9 place-items-center rounded-full bg-emerald-400 text-[#062b21]"><MessageCircle className="h-5 w-5" /></span><div><p className="text-sm font-semibold">AfroMuse AI</p><p className="text-xs text-emerald-300">en ligne</p></div></div><div className="space-y-3 py-5 text-sm"><div className="ml-auto max-w-[85%] rounded-2xl rounded-tr-sm bg-[#245c4d] px-3 py-2">Créer un amapiano festif de 60 secondes</div><div className="max-w-[88%] rounded-2xl rounded-tl-sm bg-[#1d3e36] px-3 py-2">Parfait. Quel est votre mood ?<div className="mt-3 grid grid-cols-2 gap-2 text-xs"><span className="rounded-lg border border-white/15 px-2 py-2">Solaire</span><span className="rounded-lg border border-white/15 px-2 py-2">Intense</span></div></div><div className="ml-auto max-w-[85%] rounded-2xl rounded-tr-sm bg-[#245c4d] px-3 py-2">Solaire</div><div className="max-w-[88%] rounded-2xl rounded-tl-sm bg-[#1d3e36] px-3 py-2">C’est lancé. Je vous envoie votre audio dès qu’il est prêt.</div></div><div className="flex items-center gap-2 border-t border-white/10 pt-3 text-xs text-zinc-400"><span className="rounded-full bg-white/10 px-3 py-2">Écrire un message</span><Send className="ml-auto h-4 w-4 text-emerald-300" /></div></div></div><div className="order-1 md:order-2"><p className="text-sm font-semibold uppercase tracking-[0.18em] text-emerald-300">Le studio dans votre conversation</p><h2 className="mt-4 font-serif text-4xl tracking-[-0.035em] text-white md:text-5xl">Votre prochain morceau commence par un message.</h2><p className="mt-5 max-w-xl leading-relaxed text-zinc-400">Demandez une création, suivez son statut, retrouvez votre bibliothèque ou rechargez vos crédits sans quitter WhatsApp. Des étapes guidées, en français, conçues pour aller vite.</p><div className="mt-8 grid gap-4 sm:grid-cols-2">{[["1", "Décrivez", "Votre style, votre mood, votre intention."],["2", "Validez", "Le bot vérifie vos crédits et lance la création."],["3", "Recevez", "Votre audio arrive directement dans le chat."],["4", "Conservez", "Retrouvez aussi tout dans votre bibliothèque web."]].map(([n,t,d]) => <div key={n} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4"><span className="text-sm text-amber-300">0{n}</span><p className="mt-4 font-medium">{t}</p><p className="mt-1 text-sm leading-relaxed text-zinc-500">{d}</p></div>)}</div></div></div></section>
+
+        <section id="tarifs" className="container py-20 md:py-28"><div className="mx-auto max-w-2xl text-center"><p className="text-sm font-semibold uppercase tracking-[0.18em] text-amber-300">Crédits sans surprise</p><h2 className="mt-4 font-serif text-4xl tracking-[-0.035em] text-white md:text-5xl">Payez uniquement quand l’inspiration appelle.</h2></div><div className="mx-auto mt-12 grid max-w-5xl gap-4 md:grid-cols-3">{[["Découverte","18 crédits","1 500 FCFA","Pour prendre le rythme"],["Créateur","75 crédits","5 000 FCFA","Le choix des sessions régulières"],["Studio","220 crédits","12 000 FCFA","Pour construire plus loin"]].map(([name,credits,price,caption],index) => <div key={name} className={`relative rounded-3xl border p-6 ${index===1?"border-amber-300 bg-amber-300 text-zinc-950 shadow-[0_22px_55px_rgba(251,191,36,0.18)]":"border-white/10 bg-zinc-900/50 text-white"}`}>{index===1 && <span className="absolute -top-3 left-6 rounded-full bg-zinc-950 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-amber-200">Le plus choisi</span>}<p className="text-sm font-semibold">{name}</p><p className="mt-6 text-3xl font-semibold tracking-tight">{credits}</p><p className={`mt-1 text-sm ${index===1?"text-zinc-700":"text-zinc-400"}`}>{caption}</p><div className={`my-6 h-px ${index===1?"bg-zinc-900/15":"bg-white/10"}`} /><p className="text-xl font-medium">{price}</p><Link href="/connexion"><Button className={`mt-6 w-full rounded-full ${index===1?"bg-zinc-950 text-white hover:bg-zinc-800":"bg-white text-zinc-950 hover:bg-amber-200"}`}>Choisir ce pack</Button></Link></div>)}</div></section>
+
+        <section className="border-t border-white/10 bg-zinc-950"><div className="container grid gap-10 py-20 md:grid-cols-[0.7fr_1.3fr]"><div><p className="text-sm font-semibold uppercase tracking-[0.18em] text-amber-300">Questions fréquentes</p><h2 className="mt-4 font-serif text-4xl tracking-[-0.035em] text-white">Tout ce qu’il faut savoir.</h2></div><Accordion type="single" collapsible className="w-full">{[["Puis-je générer depuis WhatsApp ?","Oui. Après la liaison sécurisée de votre numéro, le bot vous guide pour créer, suivre et recevoir vos morceaux."],["Comment fonctionnent les crédits ?","Un montant de crédits est réservé avant la génération. Il est consommé uniquement lorsque la création aboutit ; il est libéré en cas d’échec."],["Qui peut payer une recharge ?","Toute personne disposant du lien unique peut payer. Le compte AfroMuse qui a demandé la commande reste toujours le bénéficiaire des crédits."],["Puis-je utiliser mes morceaux ?","Les droits d’usage dépendent du fournisseur de génération sélectionné et du plan associé. Consultez les conditions avant toute exploitation commerciale."]].map(([title,content]) => <AccordionItem key={title} value={title} className="border-white/10"><AccordionTrigger className="text-left text-white hover:no-underline">{title}</AccordionTrigger><AccordionContent className="leading-relaxed text-zinc-400">{content}</AccordionContent></AccordionItem>)}</Accordion></div></section>
       </main>
+      <footer className="container flex flex-col gap-5 py-9 text-sm text-zinc-500 sm:flex-row sm:items-center sm:justify-between"><p>© {new Date().getFullYear()} AfroMuse AI. La création musicale, en mouvement.</p><div className="flex gap-5"><Link href="/cgu">Conditions d’utilisation</Link><Link href="/confidentialite">Confidentialité</Link><a href="mailto:bonjour@afromuse.ai">Contact</a></div></footer>
     </div>
   );
 }

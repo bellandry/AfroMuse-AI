@@ -19,17 +19,18 @@ import {
   SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { startLogin } from "@/const";
 import { useIsMobile } from "@/hooks/useMobile";
-import { LayoutDashboard, LogOut, PanelLeft, Users } from "lucide-react";
+import { AudioLines, Library, LayoutDashboard, LogOut, PanelLeft, PlusCircle, WalletCards } from "lucide-react";
 import { CSSProperties, useEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
 import { DashboardLayoutSkeleton } from './DashboardLayoutSkeleton';
 import { Button } from "./ui/button";
 
 const menuItems = [
-  { icon: LayoutDashboard, label: "Page 1", path: "/" },
-  { icon: Users, label: "Page 2", path: "/some-path" },
+  { icon: LayoutDashboard, label: "Vue d’ensemble", path: "/app" },
+  { icon: PlusCircle, label: "Créer", path: "/creer" },
+  { icon: Library, label: "Bibliothèque", path: "/bibliotheque" },
+  { icon: WalletCards, label: "Crédits", path: "/credits" },
 ];
 
 const SIDEBAR_WIDTH_KEY = "sidebar-width";
@@ -47,33 +48,34 @@ export default function DashboardLayout({
     return saved ? parseInt(saved, 10) : DEFAULT_WIDTH;
   });
   const { loading, user } = useAuth();
+  const previewMode = import.meta.env.DEV && typeof window !== "undefined" && new URLSearchParams(window.location.search).get("preview") === "1";
 
   useEffect(() => {
     localStorage.setItem(SIDEBAR_WIDTH_KEY, sidebarWidth.toString());
   }, [sidebarWidth]);
 
-  if (loading) {
+  if (loading && !previewMode) {
     return <DashboardLayoutSkeleton />
   }
 
-  if (!user) {
+  if (!user && !previewMode) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="flex flex-col items-center gap-8 p-8 max-w-md w-full">
           <div className="flex flex-col items-center gap-6">
             <h1 className="text-2xl font-semibold tracking-tight text-center">
-              Sign in to continue
+              Connectez-vous pour ouvrir votre studio
             </h1>
             <p className="text-sm text-muted-foreground text-center max-w-sm">
-              Access to this dashboard requires authentication. Continue to launch the login flow.
+              Votre bibliothèque, vos crédits et vos créations restent synchronisés avec votre compte.
             </p>
           </div>
           <Button
-            onClick={() => startLogin()}
+            onClick={() => { window.location.href = "/connexion"; }}
             size="lg"
-            className="w-full shadow-lg hover:shadow-xl transition-all"
+            className="w-full bg-amber-300 text-zinc-950 shadow-lg transition-all hover:bg-amber-200 hover:shadow-xl"
           >
-            Sign in
+            Me connecter
           </Button>
         </div>
       </div>
@@ -167,10 +169,9 @@ function DashboardLayoutContent({
                 <PanelLeft className="h-4 w-4 text-muted-foreground" />
               </button>
               {!isCollapsed ? (
-                <div className="flex items-center gap-2 min-w-0">
-                  <span className="font-semibold tracking-tight truncate">
-                    Navigation
-                  </span>
+                <div className="flex min-w-0 items-center gap-2">
+                  <span className="grid h-6 w-6 place-items-center rounded-lg bg-amber-300 text-zinc-950"><AudioLines className="h-3.5 w-3.5" /></span>
+                  <span className="truncate font-semibold tracking-tight text-zinc-100">AfroMuse <span className="text-amber-300">AI</span></span>
                 </div>
               ) : null}
             </div>
@@ -224,7 +225,7 @@ function DashboardLayoutContent({
                   className="cursor-pointer text-destructive focus:text-destructive"
                 >
                   <LogOut className="mr-2 h-4 w-4" />
-                  <span>Sign out</span>
+                  <span>Se déconnecter</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -255,7 +256,7 @@ function DashboardLayoutContent({
             </div>
           </div>
         )}
-        <main className="flex-1 p-4">{children}</main>
+        <main className="min-h-screen flex-1 bg-[#09090b] p-4 text-zinc-100 md:p-7">{children}</main>
       </SidebarInset>
     </>
   );

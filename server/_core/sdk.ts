@@ -311,11 +311,6 @@ class SDKServer {
       throw ForbiddenError("User not found");
     }
 
-    await db.upsertUser({
-      openId: user.openId,
-      lastSignedIn: signedInAt,
-    });
-
     return user;
   }
 }
@@ -333,15 +328,16 @@ function buildCronUser(
 ): AuthenticatedUser {
   const now = new Date();
   return {
-    id: -1,
-    openId: userInfo.openId,
+    id: `cron-${userInfo.openId}`,
     name: userInfo.name || "Manus Scheduled Task",
-    email: null,
-    loginMethod: null,
+    email: "cron@afromuse.invalid",
+    emailVerified: false,
+    image: null,
     role: "user",
+    phoneNumber: null,
+    locale: "fr",
     createdAt: now,
     updatedAt: now,
-    lastSignedIn: now,
     taskUid: userInfo.taskUid ?? undefined,
     isCron: true,
   } as AuthenticatedUser;

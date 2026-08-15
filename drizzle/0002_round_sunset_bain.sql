@@ -1,0 +1,2 @@
+ALTER TABLE `paymentEvents` MODIFY COLUMN `provider` enum('paystack','flutterwave','chariow') NOT NULL;--> statement-breakpoint
+ALTER TABLE `paymentOrders` MODIFY COLUMN `provider` enum('paystack','flutterwave','chariow') NOT NULL;

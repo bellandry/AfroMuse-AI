@@ -1,5 +1,27 @@
 {
   "version": "7",
   "dialect": "mysql",
-  "entries": []
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1786793002705,
+      "tag": "0000_majestic_ulik",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1786793969859,
+      "tag": "0001_wise_makkari",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1786795283184,
+      "tag": "0002_round_sunset_bain",
+      "breakpoints": true
+    }
+  ]
 }

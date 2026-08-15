@@ -1,0 +1,26 @@
+# Project TODO
+
+- [x] Définir l’architecture cible et les contrats `MusicProvider`, `WhatsAppProvider` et `PaymentProvider` interchangeables.
+- [x] Concevoir et appliquer le schéma de données pour les utilisateurs, identités WhatsApp, OTP, générations, bibliothèque, crédits, ledger, commandes et événements de webhook.
+- [ ] Intégrer Better Auth avec Google OAuth, connexion email et gestion sécurisée du compte.
+- [ ] Permettre la mise à jour du numéro de téléphone, avec un unique numéro WhatsApp actif par compte et remplacement atomique de l’ancien numéro.
+- [ ] Construire le parcours d’authentification WhatsApp par OTP email et liaison du numéro au compte.
+- [ ] Implémenter la landing page mobile-first, la démonstration audio, le parcours WhatsApp, la FAQ, les CGU, le formulaire de contact et les liens de confidentialité.
+- [x] Concevoir une interface premium et responsive pour le tableau de bord, en priorité mobile.
+- [x] Construire le formulaire de création musicale avec styles africains, humeur, durée, voix ou instrumental et prompt libre.
+- [ ] Créer la file de génération asynchrone avec statuts, retry contrôlé et affichage temps réel.
+- [x] Intégrer ElevenLabs Music derrière l’adaptateur `MusicProvider` et prévoir le mode développement sans clé externe.
+- [ ] Construire la bibliothèque audio personnelle avec lecteur, téléchargement et historique des générations.
+- [x] Implémenter le portefeuille de crédits, le ledger immuable, la réservation, la consommation et le remboursement de crédits.
+- [x] Créer des packs de crédits et des commandes de paiement à lien unique, liés au compte bénéficiaire indépendamment du payeur.
+- [x] Préparer l’intégration Flutterwave ou Paystack avec vérification et idempotence des webhooks côté serveur.
+- [x] Créer l’adaptateur OpenWA, les commandes guidées et les notifications audio WhatsApp avec un mode de démonstration sans numéro connecté.
+- [ ] Ajouter les contrôles d’accès, la validation des entrées, les limites d’usage, les journaux d’audit et les états d’erreur.
+- [ ] Écrire et exécuter les tests Vitest des flux de crédits, webhooks, OTP, génération et autorisations.
+- [x] Vérifier l’interface desktop et mobile, documenter les secrets et prérequis, puis préparer le projet pour livraison.
+- [x] Vérifier la compatibilité de l’adaptateur WhatsApp avec le produit officiel OpenWA indiqué par l’utilisateur et documenter ses prérequis d’hébergement.
+- [x] Ajouter Chariow comme prestataire de paiement sélectionnable, sans supprimer Paystack, avec création de checkout, vérification de webhook et idempotence.
+- [x] Mettre à jour le rapport de livraison avec les parcours utilisateur, les limites connues et la feuille de route vers une version production aboutie.
+- [x] Implémenter un vrai flux de remboursement de crédits (fonction dédiée + écriture ledger `refund` + déclenchement depuis les cas métier pertinents).
+- [x] Brancher l’envoi automatique de l’audio généré vers WhatsApp quand une génération liée à un numéro WhatsApp aboutit, avec gestion des erreurs d’envoi/réessai.
+- [x] Vérifier visuellement en desktop et mobile les écrans applicatifs `/app`, `/creer`, `/bibliotheque` et `/credits`, puis corriger les éventuels problèmes responsive avant de marquer la livraison prête.

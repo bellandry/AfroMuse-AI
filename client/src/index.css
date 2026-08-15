@@ -78,6 +78,18 @@
   --sidebar-ring: oklch(0.623 0.214 259.815);
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+}
+
+.font-serif {
+  font-family: "Fraunces", Georgia, serif;
+}
+
 .dark {
   --primary: var(--color-blue-700);
   --primary-foreground: var(--color-blue-50);
