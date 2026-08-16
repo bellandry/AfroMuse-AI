@@ -26,7 +26,7 @@
 - [x] Vérifier visuellement en desktop et mobile les écrans applicatifs `/app`, `/creer`, `/bibliotheque` et `/credits`, puis corriger les éventuels problèmes responsive avant de marquer la livraison prête.
 - [x] Configurer l’identité Git locale avec le nom et l’email fournis pour AfroMuse AI.
 - [x] Créer des commits structurés de l’état actuel du projet avant publication.
-- [ ] Configurer le dépôt distant GitHub `bellandry/AfroMuse-AI` et y pousser les commits.
+- [x] Configurer le dépôt distant GitHub `bellandry/AfroMuse-AI` et y pousser les commits.
 - [x] Cartographier les routes publiques, privées et programmatiques afin d’appliquer des règles d’indexation explicites.
 - [x] Convertir les routes publiques en rendu serveur avec hydratation, métadonnées uniques, canoniques, Open Graph et réponses HTTP adaptées.
 - [x] Ajouter les variables de configuration de domaine canonique et de nom de site, puis documenter leur configuration de déploiement.
@@ -54,5 +54,5 @@
 - [x] Vérifier le document final d’exploitation des formats longs : langues testées, limites de durée réelles, usage commercial et blocage du pilote ElevenLabs.
 - [ ] Distinguer explicitement dans la documentation les langues et durées préparées de celles réellement validées par des essais Eleven Music.
 - [ ] Après configuration de `ELEVENLABS_API_KEY`, exécuter un pilote contrôlé de 120/180 secondes en instrumental et vocal, avec paroles assistées et personnalisées, puis reporter les résultats réels.
-- [ ] Créer un commit Git des dernières évolutions de chansons vocales longues, du studio et de leurs tests.
-- [ ] Pousser les derniers commits AfroMuse AI vers le dépôt GitHub configuré.
+- [x] Créer un commit Git des dernières évolutions de chansons vocales longues, du studio et de leurs tests.
+- [x] Pousser les derniers commits AfroMuse AI vers le dépôt GitHub configuré.
