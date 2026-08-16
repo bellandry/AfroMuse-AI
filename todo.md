@@ -52,7 +52,7 @@
 - [x] Afficher dans le studio une estimation chiffrée des crédits avant réservation, actualisée selon durée, voix et stratégie de paroles.
 - [x] Ajouter des tests Vitest du payload Eleven Music selon le mode vocal/instrumental et les paroles, ainsi que de l’idempotence des jobs.
 - [x] Vérifier le document final d’exploitation des formats longs : langues testées, limites de durée réelles, usage commercial et blocage du pilote ElevenLabs.
-- [ ] Distinguer explicitement dans la documentation les langues et durées préparées de celles réellement validées par des essais Eleven Music.
+- [x] Distinguer explicitement dans la documentation les langues et durées préparées de celles réellement validées par des essais Eleven Music.
 - [ ] Après configuration de `ELEVENLABS_API_KEY`, exécuter un pilote contrôlé de 120/180 secondes en instrumental et vocal, avec paroles assistées et personnalisées, puis reporter les résultats réels.
 - [x] Créer un commit Git des dernières évolutions de chansons vocales longues, du studio et de leurs tests.
 - [x] Pousser les derniers commits AfroMuse AI vers le dépôt GitHub configuré.
