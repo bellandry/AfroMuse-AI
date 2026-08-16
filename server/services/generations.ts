@@ -13,6 +13,10 @@ const musicProvider: MusicProvider = new ElevenMusicProvider();
 const MAX_RETRIES = 3;
 const HOURLY_GENERATION_LIMIT = 12;
 
+export function canProcessGeneration(status: "queued" | "processing" | "completed" | "failed" | "cancelled", retryCount: number) {
+  return !["completed", "cancelled"].includes(status) && !(status === "failed" && retryCount >= MAX_RETRIES);
+}
+
 export async function createGeneration(userId: string, input: Omit<MusicGenerationInput, "requestId">) {
   const recent = await db.select({ id: musicGenerations.id }).from(musicGenerations).where(and(
     eq(musicGenerations.userId, userId), gt(musicGenerations.createdAt, new Date(Date.now() - 60 * 60 * 1000)),
@@ -24,24 +28,28 @@ export async function createGeneration(userId: string, input: Omit<MusicGenerati
   await reserveCredits(userId, creditsReserved, { referenceType: "generation", referenceId: generationId });
   await db.insert(musicGenerations).values({
     id: generationId, userId, title: input.title, prompt: input.prompt, style: input.style, mood: input.mood,
-    durationSeconds: input.durationSeconds, mode: input.mode, language: input.language, provider: musicProvider.id, creditsReserved,
+    durationSeconds: input.durationSeconds, mode: input.mode, language: input.language, lyricsMode: input.lyricsMode,
+    lyrics: input.lyrics ?? null, vocalLanguage: input.vocalLanguage, songStructure: input.songStructure ?? null,
+    provider: musicProvider.id, creditsReserved,
   });
   await db.insert(auditLogs).values({
     id: crypto.randomUUID(), userId, action: "generation.queued", entityType: "generation", entityId: generationId,
-    metadata: { style: input.style, mood: input.mood, durationSeconds: input.durationSeconds, creditsReserved },
+    metadata: { style: input.style, mood: input.mood, durationSeconds: input.durationSeconds, mode: input.mode, lyricsMode: input.lyricsMode, vocalLanguage: input.vocalLanguage, hasStructure: Boolean(input.songStructure?.length), creditsReserved },
   });
   return { id: generationId, creditsReserved, status: "queued" as const };
 }
 
 export async function processGeneration(generationId: string) {
   const [generation] = await db.select().from(musicGenerations).where(eq(musicGenerations.id, generationId)).limit(1);
-  if (!generation || generation.status === "completed" || generation.status === "cancelled" || (generation.status === "failed" && generation.retryCount >= MAX_RETRIES)) return generation;
+  if (!generation || !canProcessGeneration(generation.status, generation.retryCount)) return generation;
 
   await db.update(musicGenerations).set({ status: "processing", startedAt: new Date(), lastError: null, nextRetryAt: null }).where(and(eq(musicGenerations.id, generationId), inArray(musicGenerations.status, ["queued", "failed"])));
   try {
     const result = await musicProvider.createGeneration({
       requestId: generation.id, title: generation.title, prompt: generation.prompt, style: generation.style, mood: generation.mood,
       durationSeconds: generation.durationSeconds, mode: generation.mode, language: generation.language,
+      lyricsMode: generation.lyricsMode, lyrics: generation.lyrics, vocalLanguage: generation.vocalLanguage,
+      songStructure: generation.songStructure as MusicGenerationInput["songStructure"],
     });
     if (result.status !== "completed" || !result.outputUrl) {
       await db.update(musicGenerations).set({ providerJobId: result.providerJobId, status: result.status }).where(eq(musicGenerations.id, generationId));
@@ -52,7 +60,7 @@ export async function processGeneration(generationId: string) {
     const stored = await storagePut(`music/${generation.userId}/${generation.id}.mp3`, audioBuffer, "audio/mpeg");
     await db.transaction(async tx => {
       await tx.insert(audioAssets).values({ id: crypto.randomUUID(), generationId: generation.id, userId: generation.userId, storageKey: stored.key, publicUrl: stored.url, format: "mp3", durationSeconds: generation.durationSeconds, sizeBytes: audioBuffer.length });
-      await tx.update(musicGenerations).set({ providerJobId: result.providerJobId, status: "completed", completedAt: new Date() }).where(eq(musicGenerations.id, generationId));
+      await tx.update(musicGenerations).set({ providerJobId: result.providerJobId, providerPlanId: result.providerPlanId ?? null, actualDurationSeconds: result.actualDurationSeconds ?? generation.durationSeconds, status: "completed", completedAt: new Date() }).where(eq(musicGenerations.id, generationId));
     });
     await consumeReservation(generation.userId, generation.creditsReserved, { referenceType: "generation", referenceId: generation.id });
     const [identity] = await db.select().from(whatsappIdentities).where(eq(whatsappIdentities.userId, generation.userId)).limit(1);

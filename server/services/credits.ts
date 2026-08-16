@@ -5,6 +5,10 @@ import { db } from "../db";
 
 type CreditReference = { referenceType: string; referenceId: string };
 
+export function assertCreditAmount(amount: number, message = "Montant de crédits invalide.") {
+  if (!Number.isInteger(amount) || amount <= 0) throw new Error(message);
+}
+
 async function ensureWallet(tx: typeof db, userId: string) {
   await tx.insert(creditWallets).values({ id: crypto.randomUUID(), userId }).onDuplicateKeyUpdate({
     set: { updatedAt: new Date() },
@@ -20,7 +24,7 @@ export async function getCreditBalance(userId: string) {
 }
 
 export async function reserveCredits(userId: string, amount: number, reference: CreditReference) {
-  if (!Number.isInteger(amount) || amount <= 0) throw new Error("Montant de crédits invalide.");
+  assertCreditAmount(amount);
 
   return db.transaction(async tx => {
     const wallet = await ensureWallet(tx as unknown as typeof db, userId);
@@ -86,6 +90,7 @@ export async function releaseReservation(userId: string, amount: number, referen
 }
 
 export async function creditPurchase(userId: string, amount: number, reference: CreditReference) {
+  assertCreditAmount(amount);
   return db.transaction(async tx => {
     const wallet = await ensureWallet(tx as unknown as typeof db, userId);
     const [existing] = await tx.select().from(creditLedgerEntries).where(and(
@@ -105,7 +110,7 @@ export async function creditPurchase(userId: string, amount: number, reference: 
 }
 
 export async function refundCreditPurchase(userId: string, amount: number, reference: CreditReference) {
-  if (!Number.isInteger(amount) || amount <= 0) throw new Error("Montant de remboursement invalide.");
+  assertCreditAmount(amount, "Montant de remboursement invalide.");
   return db.transaction(async tx => {
     const wallet = await ensureWallet(tx as unknown as typeof db, userId);
     const [existing] = await tx.select().from(creditLedgerEntries).where(and(

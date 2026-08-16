@@ -40,3 +40,19 @@
 - [x] Vérifier et compléter le guide d’exploitation des variables `CANONICAL_ORIGIN` et `SITE_NAME` pour le déploiement.
 - [x] Enrichir explicitement le contact avec délais de réponse, usage des données du formulaire et informations de support cohérentes avec les pages de confiance.
 - [x] Ajouter des tests automatisés des routes `robots.txt` et `sitemap.xml`, du HTML SSR public et de la directive `noindex` privée.
+- [ ] Vérifier par un pilote Eleven Music les formats vocaux avec paroles de 120 et 180 secondes, avant d’exposer une promesse commerciale.
+- [x] Étendre les modèles de génération pour la stratégie de paroles, le texte, la langue vocale, la structure et la durée de 180 secondes.
+- [ ] Étendre l’adaptateur `MusicProvider` et Eleven Music pour les plans de composition, les paroles et les morceaux vocaux longs, en conservant le mode instrumental.
+- [x] Mettre à jour l’estimation et la réservation de crédits pour les formats de chansons vocaux de 120 et 180 secondes.
+- [x] Concevoir le parcours web de chanson avec voix, paroles assistées ou personnalisées, structure et coût avant réservation.
+- [ ] Étendre le parcours WhatsApp guidé pour les choix vocal/instrumental, paroles et durée longue, avec retour vers le web pour l’édition longue.
+- [ ] Enrichir la bibliothèque avec les paroles, la durée effective et les déclinaisons audio réellement disponibles.
+- [x] Ajouter les tests des validations de paroles, durées longues, coût, sélection de requête fournisseur et idempotence des jobs.
+- [x] Documenter les limites de langues, de durée et d’usage commercial du fournisseur avant d’activer les formats longs en production.
+- [x] Afficher dans le studio une estimation chiffrée des crédits avant réservation, actualisée selon durée, voix et stratégie de paroles.
+- [x] Ajouter des tests Vitest du payload Eleven Music selon le mode vocal/instrumental et les paroles, ainsi que de l’idempotence des jobs.
+- [x] Vérifier le document final d’exploitation des formats longs : langues testées, limites de durée réelles, usage commercial et blocage du pilote ElevenLabs.
+- [ ] Distinguer explicitement dans la documentation les langues et durées préparées de celles réellement validées par des essais Eleven Music.
+- [ ] Après configuration de `ELEVENLABS_API_KEY`, exécuter un pilote contrôlé de 120/180 secondes en instrumental et vocal, avec paroles assistées et personnalisées, puis reporter les résultats réels.
+- [ ] Créer un commit Git des dernières évolutions de chansons vocales longues, du studio et de leurs tests.
+- [ ] Pousser les derniers commits AfroMuse AI vers le dépôt GitHub configuré.

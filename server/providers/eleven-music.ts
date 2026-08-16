@@ -1,13 +1,26 @@
-import type { MusicGenerationInput, MusicGenerationTask, MusicProvider } from "./contracts";
+import { estimateMusicCredits, type MusicGenerationInput, type MusicGenerationTask, type MusicProvider } from "./contracts";
 
 const ELEVEN_MUSIC_ENDPOINT = "https://api.elevenlabs.io/v1/music";
+
+export function buildElevenMusicPayload(input: MusicGenerationInput) {
+  return {
+    prompt: [
+      input.prompt,
+      input.mode === "vocal" ? `Chanson avec voix, langue vocale : ${input.vocalLanguage === "auto" ? input.language : input.vocalLanguage}.` : "Instrumental sans voix.",
+      input.mode === "vocal" && input.lyricsMode === "custom" && input.lyrics ? `Paroles à respecter :\n${input.lyrics}` : "",
+      input.mode === "vocal" && input.lyricsMode === "generate" ? "Écrivez des paroles originales, structurées pour une chanson complète ; n’imitez aucun artiste ni texte existant." : "",
+    ].filter(Boolean).join("\n\n"),
+    music_length_ms: input.durationSeconds * 1000,
+    force_instrumental: input.mode === "instrumental",
+    output_format: "mp3_44100_128",
+  };
+}
 
 export class ElevenMusicProvider implements MusicProvider {
   readonly id = "elevenlabs";
 
   estimateCredits(input: MusicGenerationInput) {
-    const durationBand = Math.ceil(input.durationSeconds / 30);
-    return Math.max(4, durationBand * (input.mode === "vocal" ? 4 : 3));
+    return estimateMusicCredits(input);
   }
 
   async createGeneration(input: MusicGenerationInput): Promise<MusicGenerationTask> {
@@ -22,12 +35,7 @@ export class ElevenMusicProvider implements MusicProvider {
         "Content-Type": "application/json",
         "xi-api-key": apiKey,
       },
-      body: JSON.stringify({
-        prompt: input.prompt,
-        music_length_ms: input.durationSeconds * 1000,
-        force_instrumental: input.mode === "instrumental",
-        output_format: "mp3_44100_128",
-      }),
+      body: JSON.stringify(buildElevenMusicPayload(input)),
     });
 
     if (!response.ok) {

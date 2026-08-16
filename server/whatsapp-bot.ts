@@ -9,7 +9,7 @@ import { requestWhatsappOtp } from "./services/whatsapp-otp";
 type IncomingWhatsApp = { from: string; body: string };
 const bot = new OpenWAProvider();
 
-function help() { return "AfroMuse AI — choisissez une commande :\n• créer afrobeats | votre idée\n• statut\n• bibliothèque\n• crédits\n• acheter\n• aide"; }
+function help() { return "AfroMuse AI — choisissez une commande :\n• créer instrumental 60 | afrobeats | votre idée\n• créer chanson 120 | amapiano | votre idée\n• chanson web (pour écrire ou coller de longues paroles)\n• statut\n• bibliothèque\n• crédits\n• acheter\n• aide"; }
 
 export async function handleWhatsAppMessage(message: IncomingWhatsApp) {
   const body = message.body.trim();
@@ -28,6 +28,7 @@ export async function handleWhatsAppMessage(message: IncomingWhatsApp) {
   if (command === "crédits" || command === "credits") { const wallet = await getCreditBalance(user.id); return bot.sendText({ recipient: message.from, text: `Votre solde : ${wallet.balance} crédits. Répondez « acheter » pour recevoir un lien de paiement.` }); }
   if (command === "statut" || command === "bibliothèque" || command === "bibliotheque") { const generations = await listGenerationsForUser(user.id); const latest = generations.slice(0, 3); return bot.sendText({ recipient: message.from, text: latest.length ? latest.map(g => `• ${g.title} — ${g.status}`).join("\n") : "Votre bibliothèque est vide. Écrivez « créer afrobeats | votre idée » pour commencer." }); }
   if (command === "acheter") { const order = await createPaymentOrder({ userId: user.id, email: user.email, planCode: "creator", provider: "chariow", callbackUrl: `${process.env.BETTER_AUTH_URL || "https://afromuse.ai"}/credits?payment=returned` }); return bot.sendText({ recipient: message.from, text: `Voici votre lien unique Chariow pour le pack Créateur (75 crédits). Toute personne peut payer, vos crédits seront ajoutés à votre compte : ${order.checkoutUrl}` }); }
-  if (command === "créer" || command === "creer") return bot.sendText({ recipient: message.from, text: "Dites-moi le style et votre idée, par exemple : créer amapiano | piano électrique, groove nocturne et énergie solaire." });
+  if (command === "chanson web" || command === "paroles") return bot.sendText({ recipient: message.from, text: `Pour une chanson avec paroles longues, ouvrez le studio AfroMuse : ${(process.env.BETTER_AUTH_URL || "https://afromuse.ai")}/creer. Vous pourrez choisir voix, durée 2 ou 3 minutes, langue et coller vos paroles.` });
+  if (command === "créer" || command === "creer") return bot.sendText({ recipient: message.from, text: "Précisez le format : « créer instrumental 60 | afrobeats | votre idée » ou « créer chanson 120 | amapiano | votre idée ». Pour des paroles longues, écrivez « chanson web »." });
   return bot.sendText({ recipient: message.from, text: help() });
 }

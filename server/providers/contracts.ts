@@ -1,3 +1,11 @@
+export type LyricsMode = "none" | "generate" | "custom";
+export type SongSection = {
+  type: "intro" | "verse" | "pre-chorus" | "chorus" | "bridge" | "outro";
+  label?: string;
+  durationSeconds?: number;
+  lyrics?: string;
+};
+
 export type MusicGenerationInput = {
   requestId: string;
   title: string;
@@ -7,6 +15,10 @@ export type MusicGenerationInput = {
   durationSeconds: number;
   mode: "vocal" | "instrumental";
   language: "fr" | "en";
+  lyricsMode: LyricsMode;
+  lyrics?: string | null;
+  vocalLanguage: "fr" | "en" | "auto";
+  songStructure?: SongSection[] | null;
 };
 
 export type MusicGenerationTask = {
@@ -14,7 +26,19 @@ export type MusicGenerationTask = {
   status: "queued" | "processing" | "completed" | "failed";
   outputUrl?: string;
   errorMessage?: string;
+  actualDurationSeconds?: number;
+  providerPlanId?: string;
+  generatedLyrics?: string;
 };
+
+export const SUPPORTED_MUSIC_DURATIONS = [30, 60, 120, 180] as const;
+
+export function estimateMusicCredits(input: Pick<MusicGenerationInput, "durationSeconds" | "mode" | "lyricsMode">) {
+  const bands = Math.ceil(input.durationSeconds / 30);
+  const basePerBand = input.mode === "vocal" ? 5 : 3;
+  const lyricsSupplement = input.mode === "vocal" && input.lyricsMode !== "none" ? 1 : 0;
+  return Math.max(input.mode === "vocal" ? 6 : 3, bands * basePerBand + lyricsSupplement);
+}
 
 export interface MusicProvider {
   readonly id: string;
