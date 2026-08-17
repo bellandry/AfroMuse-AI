@@ -11,6 +11,7 @@ export function buildElevenMusicPayload(input: MusicGenerationInput) {
       input.mode === "vocal" && input.lyricsMode === "generate" ? "Écrivez des paroles originales, structurées pour une chanson complète ; n’imitez aucun artiste ni texte existant." : "",
     ].filter(Boolean).join("\n\n"),
     music_length_ms: input.durationSeconds * 1000,
+    model_id: "music_v2",
     force_instrumental: input.mode === "instrumental",
     output_format: "mp3_44100_128",
   };
@@ -49,6 +50,7 @@ export class ElevenMusicProvider implements MusicProvider {
       providerJobId: `eleven-${input.requestId}`,
       status: "completed",
       outputUrl: `data:audio/mpeg;base64,${encodedAudio}`,
+      audioOutputs: [{ outputUrl: `data:audio/mpeg;base64,${encodedAudio}`, variant: "master", format: "mp3" }],
     };
   }
 

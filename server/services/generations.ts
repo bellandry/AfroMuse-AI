@@ -13,6 +13,16 @@ const musicProvider: MusicProvider = new ElevenMusicProvider();
 const MAX_RETRIES = 3;
 const HOURLY_GENERATION_LIMIT = 12;
 
+function decodeAudioDataUrl(outputUrl: string) {
+  const match = outputUrl.match(/^data:audio\/([a-z0-9-]+);base64,(.+)$/i);
+  if (!match) throw new Error("Le fournisseur n’a pas retourné un fichier audio transférable.");
+  return { format: match[1] === "mpeg" ? "mp3" : match[1], bytes: Buffer.from(match[2], "base64") };
+}
+
+function assetStorageName(variant: string, format: string) {
+  return `${variant.replace(/[^a-z0-9-]/gi, "-").toLowerCase()}.${format === "mpeg" ? "mp3" : format}`;
+}
+
 export function canProcessGeneration(status: "queued" | "processing" | "completed" | "failed" | "cancelled", retryCount: number) {
   return !["completed", "cancelled"].includes(status) && !(status === "failed" && retryCount >= MAX_RETRIES);
 }
@@ -51,27 +61,42 @@ export async function processGeneration(generationId: string) {
       lyricsMode: generation.lyricsMode, lyrics: generation.lyrics, vocalLanguage: generation.vocalLanguage,
       songStructure: generation.songStructure as MusicGenerationInput["songStructure"],
     });
-    if (result.status !== "completed" || !result.outputUrl) {
+    const outputs = result.audioOutputs?.length
+      ? result.audioOutputs
+      : result.outputUrl ? [{ outputUrl: result.outputUrl, variant: "master" as const }] : [];
+    if (result.status !== "completed" || !outputs.length) {
       await db.update(musicGenerations).set({ providerJobId: result.providerJobId, status: result.status }).where(eq(musicGenerations.id, generationId));
       return result;
     }
 
-    const audioBuffer = Buffer.from(result.outputUrl.split(",")[1] ?? "", "base64");
-    const stored = await storagePut(`music/${generation.userId}/${generation.id}.mp3`, audioBuffer, "audio/mpeg");
+    const storedAssets = await Promise.all(outputs.map(async output => {
+      const decoded = decodeAudioDataUrl(output.outputUrl);
+      const format = output.format ?? decoded.format;
+      const filename = output.filename ?? assetStorageName(output.variant, format);
+      const stored = await storagePut(`music/${generation.userId}/${generation.id}/${filename}`, decoded.bytes, `audio/${format === "mp3" ? "mpeg" : format}`);
+      return { output, stored, format, filename, sizeBytes: decoded.bytes.length };
+    }));
+    const primaryAsset = storedAssets.find(item => item.output.variant === "master") ?? storedAssets[0];
+    const actualDurationSeconds = result.actualDurationSeconds ?? primaryAsset.output.durationSeconds ?? null;
+    const resolvedLyrics = generation.lyricsMode === "generate" ? result.generatedLyrics ?? generation.lyrics : generation.lyrics;
     await db.transaction(async tx => {
-      await tx.insert(audioAssets).values({ id: crypto.randomUUID(), generationId: generation.id, userId: generation.userId, storageKey: stored.key, publicUrl: stored.url, format: "mp3", durationSeconds: generation.durationSeconds, sizeBytes: audioBuffer.length });
-      await tx.update(musicGenerations).set({ providerJobId: result.providerJobId, providerPlanId: result.providerPlanId ?? null, actualDurationSeconds: result.actualDurationSeconds ?? generation.durationSeconds, status: "completed", completedAt: new Date() }).where(eq(musicGenerations.id, generationId));
+      await tx.insert(audioAssets).values(storedAssets.map(item => ({
+        id: crypto.randomUUID(), generationId: generation.id, userId: generation.userId,
+        variant: item.output.variant, filename: item.filename, storageKey: item.stored.key, publicUrl: item.stored.url,
+        format: item.format, durationSeconds: item.output.durationSeconds ?? actualDurationSeconds, sizeBytes: item.sizeBytes,
+      })));
+      await tx.update(musicGenerations).set({ providerJobId: result.providerJobId, providerPlanId: result.providerPlanId ?? null, lyrics: resolvedLyrics, actualDurationSeconds, status: "completed", completedAt: new Date() }).where(eq(musicGenerations.id, generationId));
     });
     await consumeReservation(generation.userId, generation.creditsReserved, { referenceType: "generation", referenceId: generation.id });
     const [identity] = await db.select().from(whatsappIdentities).where(eq(whatsappIdentities.userId, generation.userId)).limit(1);
     if (identity) {
       try {
-        await new OpenWAProvider().sendAudio({ recipient: identity.phoneNumber, url: stored.url, filename: `${generation.title}.mp3` });
+        await new OpenWAProvider().sendAudio({ recipient: identity.phoneNumber, url: primaryAsset.stored.url, filename: primaryAsset.filename });
       } catch (deliveryError) {
         console.error("[WhatsApp delivery]", deliveryError);
       }
     }
-    return { ...result, outputUrl: stored.url };
+    return { ...result, outputUrl: primaryAsset.stored.url };
   } catch (error) {
     const message = error instanceof Error ? error.message : "Échec inconnu de génération.";
     const retryCount = generation.retryCount + 1;

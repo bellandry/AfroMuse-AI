@@ -25,10 +25,19 @@ export type MusicGenerationTask = {
   providerJobId: string;
   status: "queued" | "processing" | "completed" | "failed";
   outputUrl?: string;
+  audioOutputs?: MusicAudioOutput[];
   errorMessage?: string;
   actualDurationSeconds?: number;
   providerPlanId?: string;
   generatedLyrics?: string;
+};
+
+export type MusicAudioOutput = {
+  outputUrl: string;
+  variant: "master" | "instrumental" | "vocals" | "stem" | "alternate";
+  format?: "mp3" | "wav";
+  durationSeconds?: number;
+  filename?: string;
 };
 
 export const SUPPORTED_MUSIC_DURATIONS = [30, 60, 120, 180] as const;

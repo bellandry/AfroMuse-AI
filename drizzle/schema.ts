@@ -158,6 +158,8 @@ export const audioAssets = mysqlTable("audioAssets", {
   id: varchar("id", { length: 36 }).primaryKey(),
   generationId: varchar("generationId", { length: 36 }).notNull(),
   userId: varchar("userId", { length: 36 }).notNull(),
+  variant: mysqlEnum("variant", ["master", "instrumental", "vocals", "stem", "alternate"]).default("master").notNull(),
+  filename: varchar("filename", { length: 255 }),
   storageKey: varchar("storageKey", { length: 512 }).notNull(),
   publicUrl: text("publicUrl").notNull(),
   format: varchar("format", { length: 16 }).notNull(),
@@ -165,7 +167,7 @@ export const audioAssets = mysqlTable("audioAssets", {
   sizeBytes: int("sizeBytes"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 }, table => [
-  uniqueIndex("audio_generation_unique").on(table.generationId),
+  index("audio_generation_variant_index").on(table.generationId, table.variant),
   index("audio_user_index").on(table.userId),
 ]);
 

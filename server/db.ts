@@ -20,13 +20,45 @@ export async function listGenerationsForUser(userId: string) {
     .orderBy(desc(schema.musicGenerations.createdAt));
 }
 
+type LibraryGeneration = typeof schema.musicGenerations.$inferSelect;
+type LibraryAudio = typeof schema.audioAssets.$inferSelect;
+
+export function toLibraryItem(generation: LibraryGeneration, audio: LibraryAudio | null) {
+  return toLibraryItemWithAssets(generation, audio ? [audio] : []);
+}
+
+export function toLibraryItemWithAssets(generation: LibraryGeneration, audioAssets: LibraryAudio[]) {
+  const primaryAudio = audioAssets.find(asset => asset.variant === "master") ?? audioAssets[0] ?? null;
+  const effectiveDurationSeconds = generation.actualDurationSeconds ?? primaryAudio?.durationSeconds ?? null;
+  return {
+    ...generation,
+    audioUrl: primaryAudio?.publicUrl ?? null,
+    effectiveDurationSeconds,
+    audio: primaryAudio ? {
+      id: primaryAudio.id,
+      variant: primaryAudio.variant,
+      filename: primaryAudio.filename,
+      format: primaryAudio.format,
+      durationSeconds: primaryAudio.durationSeconds,
+      sizeBytes: primaryAudio.sizeBytes,
+    } : null,
+    audioVariants: audioAssets.map(asset => ({ id: asset.id, variant: asset.variant, filename: asset.filename, publicUrl: asset.publicUrl, format: asset.format, durationSeconds: asset.durationSeconds, sizeBytes: asset.sizeBytes })),
+  };
+}
+
 export async function listLibraryForUser(userId: string) {
   const rows = await db.select({ generation: schema.musicGenerations, audio: schema.audioAssets })
     .from(schema.musicGenerations)
     .leftJoin(schema.audioAssets, eq(schema.audioAssets.generationId, schema.musicGenerations.id))
     .where(eq(schema.musicGenerations.userId, userId))
     .orderBy(desc(schema.musicGenerations.createdAt));
-  return rows.map(({ generation, audio }) => ({ ...generation, audioUrl: audio?.publicUrl ?? null }));
+  const grouped = new Map<string, { generation: LibraryGeneration; audioAssets: LibraryAudio[] }>();
+  for (const { generation, audio } of rows) {
+    const entry = grouped.get(generation.id) ?? { generation, audioAssets: [] };
+    if (audio) entry.audioAssets.push(audio);
+    grouped.set(generation.id, entry);
+  }
+  return Array.from(grouped.values(), ({ generation, audioAssets }) => toLibraryItemWithAssets(generation, audioAssets));
 }
 
 export async function getGenerationForUser(userId: string, generationId: string) {

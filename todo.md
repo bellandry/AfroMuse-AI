@@ -45,7 +45,9 @@
 - [ ] Étendre l’adaptateur `MusicProvider` et Eleven Music pour les plans de composition, les paroles et les morceaux vocaux longs, en conservant le mode instrumental.
 - [x] Mettre à jour l’estimation et la réservation de crédits pour les formats de chansons vocaux de 120 et 180 secondes.
 - [x] Concevoir le parcours web de chanson avec voix, paroles assistées ou personnalisées, structure et coût avant réservation.
-- [ ] Étendre le parcours WhatsApp guidé pour les choix vocal/instrumental, paroles et durée longue, avec retour vers le web pour l’édition longue.
+- [x] Étendre le parcours WhatsApp guidé pour les choix vocal/instrumental, paroles et durée longue, avec retour vers le web pour l’édition longue.
+- [x] Ajouter des tests d’intégration de messages WhatsApp couvrant les formats vocal/instrumental, les erreurs de crédits, les commandes invalides et la redirection vers le studio.
+- [x] Ajouter au bot WhatsApp le choix explicite entre paroles assistées et paroles personnalisées, avec bascule claire vers le studio pour l’édition longue.
 - [ ] Enrichir la bibliothèque avec les paroles, la durée effective et les déclinaisons audio réellement disponibles.
 - [x] Ajouter les tests des validations de paroles, durées longues, coût, sélection de requête fournisseur et idempotence des jobs.
 - [x] Documenter les limites de langues, de durée et d’usage commercial du fournisseur avant d’activer les formats longs en production.
@@ -54,5 +56,8 @@
 - [x] Vérifier le document final d’exploitation des formats longs : langues testées, limites de durée réelles, usage commercial et blocage du pilote ElevenLabs.
 - [x] Distinguer explicitement dans la documentation les langues et durées préparées de celles réellement validées par des essais Eleven Music.
 - [ ] Après configuration de `ELEVENLABS_API_KEY`, exécuter un pilote contrôlé de 120/180 secondes en instrumental et vocal, avec paroles assistées et personnalisées, puis reporter les résultats réels.
+- [ ] Persister les paroles réellement générées par le fournisseur afin que les chansons à paroles assistées affichent aussi leur texte dans la bibliothèque.
+- [ ] Étendre le modèle et la bibliothèque pour présenter plusieurs variantes audio réellement retournées par le fournisseur, chacune téléchargeable séparément.
+- [ ] Enregistrer une durée effective réelle par génération et asset lorsque le fournisseur ou le fichier la renvoie, sans dépendre d’une durée théorique.
 - [x] Créer un commit Git des dernières évolutions de chansons vocales longues, du studio et de leurs tests.
 - [x] Pousser les derniers commits AfroMuse AI vers le dépôt GitHub configuré.
